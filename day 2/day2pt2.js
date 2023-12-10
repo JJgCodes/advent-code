@@ -1,18 +1,17 @@
 const fs = require('fs')
 const data = fs.readFileSync('day 2/data.txt', 'utf-8').split('\n')
 
-const cubes = {
-	red: 12,
-	green: 13,
-	blue: 14,
-}
-
-let gameCount = 0
+let count = 0
 
 const checkGame = (game) => {
+	const cubes = {
+		red: 0,
+		green: 0,
+		blue: 0,
+	}
+
 	const currentGame = game.split(':')
-	const currentGameNum = +currentGame[0].replace(/[a-zA-Z]/g, '')
-	let isValidGame = true
+	// const currentGameNum = +currentGame[0].replace(/[a-zA-Z]/g, '')
 
 	const subSets = currentGame[1].split(';')
 
@@ -24,14 +23,17 @@ const checkGame = (game) => {
 				if (regex.test(itemSet)) {
 					const newSet = itemSet.replace(regex, '')
 					if (+newSet > value) {
-						isValidGame = false
+						cubes[key] = +newSet
 					}
 				}
 			}
 		})
 	})
 
-	if (isValidGame) gameCount = gameCount + currentGameNum
+	const sums = Object.values(cubes)
+	const calculatedNums = sums.reduce((preValue, nextValue) => preValue * nextValue)
+
+	count += calculatedNums
 }
 
 const play = () => {
@@ -39,7 +41,7 @@ const play = () => {
 		checkGame(line)
 	})
 
-	console.log(gameCount)
+	console.log(count)
 }
 
 play()
